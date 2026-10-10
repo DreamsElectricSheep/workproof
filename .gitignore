@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.workproof/
+dist/
+build/
+*.egg-info/
+.venv/
+# internal launch kit (drafts, test plan, notes); never published
+launch/

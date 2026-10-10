@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "workproof"
+version = "0.1.0"
+description = "Proof-of-work monitoring for scheduled and AI agents: catches agents that are dead or idle while every health check is green."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "workproof contributors" }]
+keywords = ["agents", "monitoring", "heartbeat", "observability", "cron", "llm", "reliability", "dead-man-switch"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Monitoring",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://github.com/DreamsElectricSheep/workproof"
+Issues = "https://github.com/DreamsElectricSheep/workproof/issues"
+
+[project.scripts]
+workproof = "workproof.cli:main"
+
+[tool.setuptools]
+packages = ["workproof"]
