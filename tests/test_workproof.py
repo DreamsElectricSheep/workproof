@@ -54,25 +54,25 @@ class BasicBehaviour(Base):
 class RealIncidents(Base):
     """The four failures that motivated this tool, reproduced."""
 
-    def test_eqls_dead_six_weeks_never_runs(self):
+    def test_job_dead_six_weeks_never_runs(self):
         record('a', 'last good run', self.store, now=T0)
         f = check(self.reg(max_gap_hours=200), self.store, now=T0 + 42 * D)
         self.assertEqual(kinds(f), [('no_run', 'a')])
 
-    def test_x_scanner_rewrites_empty_file_daily(self):
+    def test_scraper_rewrites_empty_output_daily(self):
         record('a', 'real data', self.store, now=T0)
         for i in range(1, 10):
             record('a', '[]', self.store, now=T0 + i * D)
         f = check(self.reg(), self.store, now=T0 + 9 * D + H)
         self.assertEqual(kinds(f), [('empty_output', 'a')])
 
-    def test_13f_gutted_runs_daily_but_output_frozen(self):
+    def test_script_emptied_by_an_edit_still_runs_but_output_frozen(self):
         for i in range(21):
             record('a', 'identical constant output', self.store, now=T0 + i * D)
         f = check(self.reg(), self.store, now=T0 + 20 * D + H)
         self.assertEqual(kinds(f), [('no_new_work', 'a')])
 
-    def test_allora_fatal_error_exits_zero_frozen_log(self):
+    def test_fatal_error_exits_zero_output_frozen(self):
         # swallowed its own fatal error: no exception reaches the wrapper, log tail frozen
         for i in range(5):
             record('a', 'FATAL: connection refused', self.store, now=T0 + i * D)

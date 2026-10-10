@@ -2,27 +2,27 @@
 
 Proof-of-work monitoring for scheduled and AI agents. Standard library only, Python 3.9+.
 
-Normal health checks verify an **artifact**: the process is up, the file exists, the file is recent. An agent can pass every one of those while doing nothing. It crashes and rewrites an empty file. It swallows a fatal error and exits 0. Its cron entry was never added. workproof checks that **new work was produced**.
+Normal health checks look at artifacts: the process is up, the file exists, the file is recent. An agent can pass every one of those and still do nothing. It can crash and rewrite an empty file, swallow a fatal error and exit 0, or have a cron entry that was never added. workproof checks that new work was actually produced.
 
 ## Why this exists
 
-It was extracted from a monitor written after an audit of a fleet of scheduled agents found four of them dead for between 5 days and 6 weeks while every existing check reported healthy:
+It was extracted from a monitor written after an audit of a fleet of scheduled agents found four of them dead for between 5 days and 6 weeks while every existing check reported them healthy:
 
-- one had not run for **six weeks** and was in no monitor at all;
-- one had been dead nine days, **rewriting a fresh but empty file** every day;
-- one had been gutted by an automated code edit, still compiled and imported, and did nothing for **three weeks**;
-- one hit a fatal error and **exited 0**, so the restart policy never fired.
+- one had not run for six weeks and was in no monitor at all;
+- one had been dead for nine days, rewriting an empty output file every day;
+- one had its logic removed by an automated code edit, still compiled and imported, and did nothing for three weeks;
+- one hit a fatal error and exited 0, so the restart policy never fired.
 
-Every check verified an artifact. None verified that work happened.
+Each check looked at an artifact. None looked at whether work happened. The longer write-up is in [docs/five-failures.md](docs/five-failures.md).
 
 ## How it works
 
 Two parts, deliberately separate:
 
-1. **The agent records evidence** after every run (decorator, context manager, or a shell command).
-2. **A checker you run from cron or CI** compares the evidence with a registry and exits non-zero on findings. Because the checker is separate, it also catches an agent that never starts, which a decorator alone cannot see.
+1. The agent records evidence after every run (decorator, context manager, or a shell command).
+2. A checker you run from cron or CI compares the evidence with a registry and exits non-zero on findings. Because the checker is separate, it also catches an agent that never starts, which a decorator alone cannot see.
 
-Evidence is tracked by **content hash, not file age**. Output identical to the last run does not count as new work, and empty output never does.
+Evidence is tracked by content hash, not file age. Output identical to the last run does not count as new work, and empty output never does.
 
 ## Quick start
 
@@ -94,7 +94,7 @@ Registry options per agent: `max_gap_hours` (required), `max_run_gap_hours`, `we
 
 ## What it does not do
 
-- It detects **dead or idle** agents, not **wrong** ones. An agent emitting changing garbage passes.
+- It detects dead or idle agents, not wrong ones. An agent emitting changing garbage passes.
 - Output that is legitimately constant will be flagged. Declare it under `no_evidence_expected` or give it a longer limit.
 - Weekdays are evaluated in UTC.
 - One writer per agent name is assumed (no file locking).
