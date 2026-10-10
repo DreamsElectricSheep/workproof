@@ -33,7 +33,8 @@ def cmd_check(args) -> int:
         for f in findings:
             print(f'{f.kind.upper():22} {f.agent}: {f.detail}')
     else:
-        print(f'OK: {len(registry["agents"])} agents, all producing new work')
+        n = len(registry['agents'])
+        print(f'OK: {n} agent{"" if n == 1 else "s"}, all producing new work')
     return 1 if findings else 0
 
 
